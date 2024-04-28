@@ -1,17 +1,10 @@
 #!/bin/bash
 
-# Path to the sources.list file
-sources_list="/etc/apt/sources.list"
+# Make a copy of the original sources.list file
+sudo cp /etc/apt/sources.list /etc/apt/sourcesOLD.list
 
-# Backup the original sources.list file
-cp "$sources_list" "$sources_list.bak"
-
-# Comment out existing entries
-sed -i -e 's/^deb/#deb/g' "$sources_list"
-sed -i -e 's/^deb-src/#deb-src/g' "$sources_list"
-
-# Add new entries
-cat << EOF >> "$sources_list"
+# Define the new content to replace with
+new_content="\
 deb http://archive.ubuntu.com/ubuntu/ focal main restricted universe multiverse
 deb-src http://archive.ubuntu.com/ubuntu/ focal main restricted universe multiverse
 
@@ -26,6 +19,9 @@ deb-src http://archive.ubuntu.com/ubuntu/ focal-backports main restricted univer
 
 deb http://archive.canonical.com/ubuntu focal partner
 deb-src http://archive.canonical.com/ubuntu focal partner
-EOF
+"
 
-echo "New sources added and old ones commented out successfully."
+# Replace the content of the file with the new content
+echo "$new_content" | sudo tee /etc/apt/sources.list > /dev/null
+
+echo "The sources.list file has been replaced with the new content."
